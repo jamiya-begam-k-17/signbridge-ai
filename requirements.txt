@@ -8,3 +8,4 @@ pandas
 python-multipart
 pyttsx3
 scikit-learn
+seaborn

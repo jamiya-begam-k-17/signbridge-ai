@@ -3,11 +3,26 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+# pickle files
+*.pkl
+
+# json file
+*.json
+
 # C extensions
 *.so
+*.csv
+*.task
 
-backend/models/hand_landmarker.task
-datasets/
+# images
+*.jpg
+*.png
+*.jpeg
+*.bmp
+
+#videos
+*.mp4
+*.avi
 
 # Distribution / packaging
 .Python
