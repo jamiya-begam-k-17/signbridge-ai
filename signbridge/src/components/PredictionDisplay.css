@@ -1,0 +1,113 @@
+.pred-display {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  height: 100%;
+}
+
+/* Current word */
+.pred-display__current {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 24px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  text-align: center;
+}
+
+.pred-display__label {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+}
+
+.pred-display__word {
+  font-family: var(--font-display);
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: var(--text-secondary);
+  letter-spacing: -0.02em;
+  line-height: 1;
+  min-height: 3rem;
+  transition: color 0.3s, transform 0.2s;
+}
+
+.pred-display__word--active {
+  color: var(--accent-primary);
+  text-shadow: 0 0 30px rgba(0, 212, 170, 0.4);
+  animation: fadeUp 0.25s ease;
+}
+
+.pred-display__speak-btn {
+  font-size: 0.8rem;
+  padding: 7px 16px;
+}
+
+/* Transcript */
+.pred-display__transcript-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pred-display__clear {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: color 0.2s;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+}
+.pred-display__clear:hover { color: var(--status-error); }
+
+.pred-display__transcript {
+  flex: 1;
+  min-height: 100px;
+  max-height: 200px;
+  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-content: flex-start;
+  padding: 16px;
+  background: var(--bg-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+}
+
+.pred-display__empty {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  width: 100%;
+  text-align: center;
+  padding-top: 20px;
+}
+
+.pred-display__token {
+  display: inline-block;
+  background: var(--bg-elevated);
+  border: 1px solid var(--border-mid);
+  color: var(--text-primary);
+  padding: 4px 12px;
+  border-radius: 100px;
+  font-size: 0.88rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  animation: fadeUp 0.3s ease both;
+}
+
+.pred-display__copy {
+  font-size: 0.82rem;
+  padding: 8px 16px;
+  align-self: flex-start;
+}
