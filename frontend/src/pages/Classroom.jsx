@@ -1,14 +1,3 @@
-// ============================================================
-// Classroom Page – Classroom Accessibility Mode
-//
-// Two simultaneous channels:
-//  1. SIGN → TEXT : webcam frames sent to /predict every 800ms
-//  2. SPEECH → TEXT : Web Speech API (SpeechRecognition) converts
-//                     teacher's speech to live captions for students
-//
-// Together these create a fully bidirectional classroom environment.
-// ============================================================
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useCamera } from '../hooks/useCamera';
 import { useSpeech } from '../hooks/useSpeech';

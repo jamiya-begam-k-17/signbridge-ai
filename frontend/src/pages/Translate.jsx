@@ -1,27 +1,14 @@
-// ============================================================
-// Translate Page – Text → Sign Language
-// Reverse communication: non-signers type text, hearing-impaired
-// students receive it as sign language visual references.
-//
-// Since the backend does not have a text-to-sign video endpoint,
-// this page uses a well-known public ASL dictionary URL pattern
-// to show sign reference images/GIFs per word.
-// ============================================================
-
 import { useState } from 'react';
 import { useSpeech } from '../hooks/useSpeech';
 import './Translate.css';
 
-// Supported signs that the model was trained on
-// (matches SIGNS list in ai_model/create_landmark_dataset.py)
 const MODEL_SIGNS = ['hello', 'help', 'no', 'water', 'yes', 'thank you'];
 
-// ASL SigningSavvy GIF URL (free public resource for ASL signs)
-// Pattern: https://www.signingsavvy.com/sign/{WORD}
-// We use Handspeak for embeddable images
+
 function getSignUrl(word) {
-  return `https://www.handspeak.com/word/search/index.php?id=${encodeURIComponent(word)}`;
+  return `http://localhost:5173/images/${word}.png`;
 }
+
 
 export default function Translate() {
   const [inputText, setInputText]   = useState('');
