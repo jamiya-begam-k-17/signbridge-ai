@@ -63,17 +63,6 @@ export default function Home({ apiHealthy }) {
         </div>
       </section>
 
-      {/* Supported signs */}
-      <section className="home__signs fade-up" style={{ animationDelay: '0.15s' }}>
-        <p className="home__signs-label">Supported signs include</p>
-        <div className="home__signs-list">
-          {SIGNS.map((s) => (
-            <span key={s} className="home__sign-chip">{s}</span>
-          ))}
-          <span className="home__sign-chip home__sign-chip--more">+ more</span>
-        </div>
-      </section>
-
       {/* Features grid */}
       <section className="home__features" style={{ animationDelay: '0.25s' }}>
         {FEATURES.map((f, i) => (

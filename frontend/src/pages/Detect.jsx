@@ -1,15 +1,3 @@
-// ============================================================
-// Detect Page
-// Core feature: webcam → backend /predict → display prediction
-//
-// Flow:
-//  1. User clicks "Start Detection"
-//  2. useCamera starts webcam stream
-//  3. Every 800ms: captureFrame() → predictSign(blob) → show result
-//  4. Unique predictions are appended to transcript
-//  5. "Speak" button uses Web Speech API to voice the word
-// ============================================================
-
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { useCamera } from '../hooks/useCamera';
 import { useSpeech } from '../hooks/useSpeech';
