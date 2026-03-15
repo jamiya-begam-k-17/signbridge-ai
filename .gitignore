@@ -9,6 +9,13 @@ __pycache__/
 # json file
 *.json
 
+dataset/
+*.npy
+*.h5
+*.pkl
+
+sign_language/
+
 # C extensions
 *.so
 *.csv
