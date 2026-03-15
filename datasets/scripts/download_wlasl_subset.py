@@ -3,8 +3,8 @@ import os
 import yt_dlp
 
 # ==== CHANGE YOUR 5 SIGNS HERE ====
-# selected_signs = ["hello", "help", "water", "yes", "no"]
-selected_signs = ['thank you', 'thanksgiving']
+selected_signs = ["hello", "help", "water", "yes", "no"]
+# selected_signs = ['thank you', 'thanksgiving']
 # paths
 json_path = "../WLASL_v0.3.json"
 output_dir = "../raw_videos"

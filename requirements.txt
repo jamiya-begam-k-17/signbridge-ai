@@ -2,7 +2,7 @@ fastapi
 uvicorn
 opencv-python
 mediapipe
-tensorflow
+tensorflow==2.16.2
 numpy
 pandas
 python-multipart
