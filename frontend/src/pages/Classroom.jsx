@@ -1,10 +1,13 @@
 // ============================================================
 // Classroom.jsx – Redesigned
-// Layout: [Camera+Sign Panel] | [Main Sign Display] | [Chatbox]
-// Flow: choose student → start session → signs go to chat as
-//       student messages; teacher speech goes to chat as
-//       teacher messages; both can also type freely.
-//       On end session → saved to DB with teacher + student.
+// Layout: [Camera Panel LEFT] | [Current Sign CENTRE] | [Chat RIGHT]
+// Flow:
+//   1. Choose student from dropdown (required before starting)
+//   2. Start session → camera opens, sign detection begins
+//   3. Detected signs appear in chat as student messages
+//   4. Teacher speech (mic) appears as teacher messages
+//   5. Teacher and student can also type manually
+//   6. End session → conversation saved to DB
 // ============================================================
 
 import { useState, useEffect, useRef, useCallback } from 'react';
@@ -17,50 +20,49 @@ import './Classroom.css';
 const PREDICT_INTERVAL_MS = 1000;
 
 export default function Classroom() {
-  // ── Camera / sign detection ────────────────────────────────
   const { videoRef, canvasRef, active, error: camError, startCamera, stopCamera, captureFrame } =
     useCamera();
   const { speak } = useSpeech();
 
-  // ── Students list ──────────────────────────────────────────
-  const [students,         setStudents]        = useState([]);
-  const [selectedStudent,  setSelectedStudent]  = useState('');
+  // Students
+  const [students,        setStudents]       = useState([]);
+  const [selectedStudent, setSelectedStudent] = useState('');
 
-  // ── Session state ──────────────────────────────────────────
-  const [sessionActive,    setSessionActive]    = useState(false);
-  const [convId,           setConvId]           = useState(null);
+  // Session
+  const [sessionActive,   setSessionActive]  = useState(false);
+  const [convId,          setConvId]         = useState(null);
 
-  // ── Sign detection ─────────────────────────────────────────
-  const [currentSign,      setCurrentSign]      = useState('');
+  // Sign detection
+  const [currentSign,     setCurrentSign]    = useState('');
 
-  // ── Chat messages: { id, role: 'student'|'teacher', text, time } ──
-  const [chatMessages,     setChatMessages]     = useState([]);
-  const [teacherInput,     setTeacherInput]     = useState('');
+  // Chat: { id, role: 'student'|'teacher', text, time }
+  const [chatMessages,    setChatMessages]   = useState([]);
+  const [teacherInput,    setTeacherInput]   = useState('');
+  const [studentInput,    setStudentInput]   = useState('');
   const chatEndRef = useRef(null);
 
-  // ── Speech recognition ─────────────────────────────────────
-  const [speechActive,     setSpeechActive]     = useState(false);
-  const [speechSupported,  setSpeechSupported]  = useState(false);
-  const [interimCaption,   setInterimCaption]   = useState('');
+  // Speech
+  const [speechActive,    setSpeechActive]   = useState(false);
+  const [speechSupported, setSpeechSupported] = useState(false);
+  const [interimCaption,  setInterimCaption]  = useState('');
 
   const intervalRef    = useRef(null);
   const lastSignRef    = useRef('');
   const recognitionRef = useRef(null);
-  const signBufferRef  = useRef([]);
 
-  // ── Load students ──────────────────────────────────────────
+  // Load students
   useEffect(() => {
     getUsers()
       .then(setStudents)
       .catch(err => console.error('Could not load students', err));
   }, []);
 
-  // ── Auto-scroll chat ───────────────────────────────────────
+  // Auto-scroll chat
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [chatMessages]);
 
-  // ── Speech recognition setup ───────────────────────────────
+  // Speech recognition setup
   useEffect(() => {
     const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SR) { setSpeechSupported(false); return; }
@@ -84,7 +86,6 @@ export default function Classroom() {
         const text = final.trim();
         setInterimCaption('');
         addMessage('teacher', text);
-        // persist to DB if session active
         if (convId) {
           sendMessage(convId, `[Teacher] ${text}`).catch(() => {});
         }
@@ -95,7 +96,7 @@ export default function Classroom() {
     return () => rec.stop();
   }, [convId]);
 
-  // ── Sign prediction loop ───────────────────────────────────
+  // Sign prediction loop
   const runSignPrediction = useCallback(async () => {
     if (!active) return;
     try {
@@ -108,14 +109,8 @@ export default function Classroom() {
         setCurrentSign(word);
         if (word !== lastSignRef.current) {
           lastSignRef.current = word;
-          // Buffer signs, push to chat as student message
-          signBufferRef.current.push(word);
           speak(word);
-
-          // Add sign as student chat message
-          addMessage('student', word);
-
-          // Persist to DB
+          addMessage('student', word, true);
           if (convId) {
             sendMessage(convId, `[Student Sign] ${word}`).catch(() => {});
           }
@@ -126,7 +121,7 @@ export default function Classroom() {
     } catch (_) {}
   }, [active, captureFrame, speak, convId]);
 
-  // ── Start session ──────────────────────────────────────────
+  // Start session
   const startSession = useCallback(async () => {
     if (!selectedStudent) return;
     try {
@@ -139,7 +134,6 @@ export default function Classroom() {
     setSessionActive(true);
     setChatMessages([]);
     lastSignRef.current = '';
-    signBufferRef.current = [];
 
     if (speechSupported && recognitionRef.current) {
       try { recognitionRef.current.start(); setSpeechActive(true); }
@@ -147,7 +141,7 @@ export default function Classroom() {
     }
   }, [selectedStudent, startCamera, speechSupported]);
 
-  // ── Stop session ───────────────────────────────────────────
+  // Stop session
   const stopSession = useCallback(() => {
     clearInterval(intervalRef.current);
     stopCamera();
@@ -161,7 +155,7 @@ export default function Classroom() {
     setConvId(null);
   }, [stopCamera, speechActive]);
 
-  // ── Prediction interval ────────────────────────────────────
+  // Prediction interval
   useEffect(() => {
     if (active && sessionActive) {
       intervalRef.current = setInterval(runSignPrediction, PREDICT_INTERVAL_MS);
@@ -169,16 +163,22 @@ export default function Classroom() {
     return () => clearInterval(intervalRef.current);
   }, [active, sessionActive, runSignPrediction]);
 
-  // ── Helpers ────────────────────────────────────────────────
-  const addMessage = (role, text) => {
+  // Helper: add message to chat
+  const addMessage = (role, text, isSign = false) => {
     setChatMessages(prev => [...prev, {
       id: Date.now() + Math.random(),
       role,
       text,
-      time: new Date().toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' })
+      isSign,
+      time: new Date().toLocaleTimeString('en-IN', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      })
     }]);
   };
 
+  // Teacher send (typed)
   const handleTeacherSend = async () => {
     if (!teacherInput.trim()) return;
     const text = teacherInput.trim();
@@ -189,41 +189,43 @@ export default function Classroom() {
     }
   };
 
-  const handleStudentType = async (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      const text = e.target.value.trim();
-      if (!text) return;
-      e.target.value = '';
-      addMessage('student', text);
-      if (convId) {
-        sendMessage(convId, `[Student] ${text}`).catch(() => {});
-      }
+  // Student send (typed)
+  const handleStudentSend = async () => {
+    if (!studentInput.trim()) return;
+    const text = studentInput.trim();
+    setStudentInput('');
+    addMessage('student', text);
+    if (convId) {
+      sendMessage(convId, `[Student] ${text}`).catch(() => {});
     }
   };
 
-  const selectedStudentName = students.find(s => String(s.id) === String(selectedStudent))?.username;
+  const selectedStudentName = students.find(
+    s => String(s.id) === String(selectedStudent)
+  )?.username;
 
   return (
     <div className="cr-page">
-      {/* ── Header ─────────────────────────────────────────── */}
+
+      {/* ── Header ───────────────────────────────────────────── */}
       <div className="cr-header fade-up">
-        <div className="cr-header__left">
-          <h1 className="cr-title">Classroom</h1>
-          {sessionActive && (
-            <span className="badge badge-live">LIVE · {selectedStudentName}</span>
-          )}
+        <div className="cr-header-row">
+          <div className="cr-header-left">
+            <h1 className="page-title">Classroom</h1>
+            {sessionActive && (
+              <span className="badge badge-live">LIVE · {selectedStudentName}</span>
+            )}
+          </div>
+          <p className="page-sub">
+            Choose a student, start the session, and communicate through sign language.
+          </p>
         </div>
-        <p className="cr-sub">
-          Student signs are detected and shown in the chat. Teacher speech is captioned automatically.
-        </p>
       </div>
 
-      {camError && <div className="cr-error fade-in">⚠ {camError}</div>}
+      {camError && <div className="banner-error fade-in">⚠ {camError}</div>}
 
-      {/* ── Controls bar ───────────────────────────────────── */}
-      <div className="cr-controls fade-up" style={{ animationDelay: '0.08s' }}>
-        {/* Student selector – always visible, disabled during session */}
+      {/* ── Controls bar ─────────────────────────────────────── */}
+      <div className="cr-controls card fade-up" style={{ animationDelay: '0.06s' }}>
         <div className="cr-student-select">
           <label className="cr-select-label">Student</label>
           <select
@@ -239,66 +241,65 @@ export default function Classroom() {
           </select>
         </div>
 
-        {!sessionActive ? (
-          <button
-            className="btn btn-primary"
-            onClick={startSession}
-            disabled={!selectedStudent}
-          >
-            ◉ Start Session
-          </button>
-        ) : (
-          <button className="btn btn-danger" onClick={stopSession}>
-            ■ End Session
-          </button>
-        )}
-
-        {!speechSupported && (
-          <span className="cr-warn">⚠ Speech recognition not supported</span>
-        )}
+        <div className="cr-controls-actions">
+          {!speechSupported && (
+            <span className="cr-warn">⚠ Speech recognition unavailable</span>
+          )}
+          {!sessionActive ? (
+            <button
+              className="btn btn-primary"
+              onClick={startSession}
+              disabled={!selectedStudent}
+              title={!selectedStudent ? 'Select a student first' : ''}
+            >
+              ▶ Start Session
+            </button>
+          ) : (
+            <button className="btn btn-danger" onClick={stopSession}>
+              ■ End Session
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* ── Three-column layout ────────────────────────────── */}
-      <div className="cr-layout fade-up" style={{ animationDelay: '0.16s' }}>
+      {/* ── Three-column layout ──────────────────────────────── */}
+      <div className="cr-layout fade-up" style={{ animationDelay: '0.14s' }}>
 
-        {/* LEFT: Camera + sign transcript */}
-        <div className="cr-panel cr-panel--left">
-          <div className="cr-panel__head">
-            <span className="cr-panel__icon">◈</span>
-            <span className="cr-panel__title">Student Camera</span>
+        {/* LEFT: Camera */}
+        <div className="cr-panel">
+          <div className="cr-panel-head">
+            <span className="cr-panel-icon">◈</span>
+            <span className="cr-panel-title">Student Camera</span>
           </div>
 
           <CameraFeed videoRef={videoRef} canvasRef={canvasRef} active={active} />
 
-          {/* Interim speech banner */}
-          {interimCaption && (
-            <div className="cr-interim">
-              <span className="cr-interim__label">Teacher saying:</span>
-              <span className="cr-interim__text">{interimCaption}</span>
+          {!sessionActive && (
+            <div className="cr-cam-placeholder">
+              {selectedStudent ? 'Press Start Session to begin' : 'Choose a student first'}
             </div>
           )}
 
-          {!sessionActive && (
-            <div className="cr-cam-placeholder">
-              {selectedStudent
-                ? 'Press Start Session to begin'
-                : 'Choose a student first'}
+          {interimCaption && (
+            <div className="cr-interim fade-in">
+              <span className="cr-interim-label">Teacher saying</span>
+              <span className="cr-interim-text">{interimCaption}</span>
             </div>
           )}
         </div>
 
-        {/* CENTRE: Big current sign display */}
-        <div className="cr-panel cr-panel--centre">
-          <div className="cr-panel__head">
-            <span className="cr-panel__icon">◎</span>
-            <span className="cr-panel__title">Current Sign</span>
+        {/* CENTRE: Current sign (main display) */}
+        <div className="cr-panel">
+          <div className="cr-panel-head">
+            <span className="cr-panel-icon">◎</span>
+            <span className="cr-panel-title">Current Sign</span>
           </div>
 
           <div className="cr-sign-stage">
             {currentSign ? (
               <>
                 <div className="cr-sign-word fade-in">{currentSign}</div>
-                <div className="cr-sign-sub">Detected sign</div>
+                <div className="cr-sign-label">Detected Sign</div>
               </>
             ) : (
               <div className="cr-sign-empty">
@@ -307,22 +308,22 @@ export default function Classroom() {
             )}
           </div>
 
-          {/* Teacher speech current caption */}
+          {/* Speech caption box */}
           <div className={`cr-caption-box ${interimCaption ? 'cr-caption-box--active' : ''}`}>
             {interimCaption
               ? <p className="cr-caption-text">{interimCaption}</p>
               : <p className="cr-caption-placeholder">
-                  {speechActive ? '🎤 Listening…' : 'Teacher speech caption appears here'}
+                  {speechActive ? '🎤 Listening for teacher speech…' : 'Teacher speech caption will appear here'}
                 </p>
             }
           </div>
         </div>
 
-        {/* RIGHT: Chat box */}
+        {/* RIGHT: Chat */}
         <div className="cr-panel cr-panel--chat">
-          <div className="cr-panel__head">
-            <span className="cr-panel__icon">⊕</span>
-            <span className="cr-panel__title">
+          <div className="cr-panel-head">
+            <span className="cr-panel-icon">⊕</span>
+            <span className="cr-panel-title">
               Session Chat
               {selectedStudentName && (
                 <span className="cr-chat-partner"> · {selectedStudentName}</span>
@@ -330,60 +331,72 @@ export default function Classroom() {
             </span>
           </div>
 
-          {/* Messages */}
+          {/* Messages list */}
           <div className="cr-messages">
             {chatMessages.length === 0 && (
-              <div className="cr-messages__empty">
-                Messages will appear here once the session starts
+              <div className="cr-messages-empty">
+                {sessionActive
+                  ? 'Start signing or speaking — messages appear here'
+                  : 'Session messages will appear here'}
               </div>
             )}
             {chatMessages.map(msg => (
               <div key={msg.id} className={`cr-msg cr-msg--${msg.role}`}>
-                <div className="cr-msg__bubble">
-                  <span className="cr-msg__text">{msg.text}</span>
+                <div className="cr-msg-bubble">
+                  {msg.isSign && <span className="cr-msg-sign-tag">✋ Sign</span>}
+                  <span className="cr-msg-text">{msg.text}</span>
                 </div>
-                <div className="cr-msg__meta">
-                  <span className="cr-msg__role">
+                <div className="cr-msg-meta">
+                  <span className="cr-msg-role">
                     {msg.role === 'teacher' ? '◎ Teacher' : '◈ Student'}
                   </span>
-                  <span className="cr-msg__time">{msg.time}</span>
+                  <span className="cr-msg-time">{msg.time}</span>
                 </div>
               </div>
             ))}
             <div ref={chatEndRef} />
           </div>
 
-          {/* Input area — teacher types */}
-          <div className="cr-chat-input">
-            <input
-              type="text"
-              placeholder={sessionActive ? 'Teacher: type a message…' : 'Start session to chat'}
-              value={teacherInput}
-              onChange={e => setTeacherInput(e.target.value)}
-              onKeyDown={e => {
-                if (e.key === 'Enter') { e.preventDefault(); handleTeacherSend(); }
-              }}
-              disabled={!sessionActive}
-              className="cr-chat-input__field"
-            />
-            <button
-              className="btn btn-primary cr-chat-input__send"
-              onClick={handleTeacherSend}
-              disabled={!sessionActive || !teacherInput.trim()}
-            >
-              ↑
-            </button>
+          {/* Teacher input */}
+          <div className="cr-input-group">
+            <span className="cr-input-label">Teacher</span>
+            <div className="cr-input-row">
+              <input
+                type="text"
+                className="cr-input-field"
+                placeholder={sessionActive ? 'Type a message…' : 'Start session to chat'}
+                value={teacherInput}
+                onChange={e => setTeacherInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleTeacherSend(); } }}
+                disabled={!sessionActive}
+              />
+              <button
+                className="btn btn-primary cr-send-btn"
+                onClick={handleTeacherSend}
+                disabled={!sessionActive || !teacherInput.trim()}
+              >↑</button>
+            </div>
           </div>
 
-          {/* Student manual input */}
-          <div className="cr-chat-input cr-chat-input--student">
-            <input
-              type="text"
-              placeholder="Student: type a message…"
-              onKeyDown={handleStudentType}
-              disabled={!sessionActive}
-              className="cr-chat-input__field"
-            />
+          {/* Student input */}
+          <div className="cr-input-group cr-input-group--student">
+            <span className="cr-input-label">Student</span>
+            <div className="cr-input-row">
+              <input
+                type="text"
+                className="cr-input-field"
+                placeholder={sessionActive ? 'Student types here…' : 'Start session to chat'}
+                value={studentInput}
+                onChange={e => setStudentInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); handleStudentSend(); } }}
+                disabled={!sessionActive}
+              />
+              <button
+                className="btn btn-ghost cr-send-btn"
+                onClick={handleStudentSend}
+                disabled={!sessionActive || !studentInput.trim()}
+              >↑</button>
+            </div>
           </div>
         </div>
 
