@@ -1,0 +1,6 @@
+#root {
+  /* Remove max-width to allow full-width layouts */
+  width: 100%;
+  padding: 0;
+  text-align: left;
+}

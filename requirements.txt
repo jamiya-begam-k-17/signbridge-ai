@@ -1,0 +1,16 @@
+fastapi
+uvicorn
+opencv-python
+mediapipe
+tensorflow
+numpy
+pandas
+python-multipart
+pyttsx3
+scikit-learn
+seaborn
+sqlalchemy
+alembic
+passlib[bcrypt]
+python-jose[cryptography]
+python-decouple

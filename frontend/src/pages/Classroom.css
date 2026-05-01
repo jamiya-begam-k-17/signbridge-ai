@@ -1,0 +1,353 @@
+/* ============================================================
+   Classroom page – clean, consistent, theme-aware
+   ============================================================ */
+
+.cr-page {
+  min-height: 100vh;
+  padding: 84px 28px 60px;
+  max-width: 1340px;
+  margin: 0 auto;
+}
+
+/* Header */
+.cr-header {
+  margin-bottom: 20px;
+}
+.cr-header__left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+.cr-title {
+  font-family: var(--font-display);
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+}
+.cr-sub {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  max-width: 600px;
+}
+
+/* Error */
+.cr-error {
+  background: rgba(255, 71, 87, 0.08);
+  border: 1px solid rgba(255, 71, 87, 0.25);
+  border-radius: var(--radius-md);
+  padding: 11px 16px;
+  font-size: 0.875rem;
+  color: var(--status-error);
+  margin-bottom: 16px;
+}
+
+/* Controls */
+.cr-controls {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+}
+
+.cr-student-select {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 200px;
+  max-width: 320px;
+}
+.cr-select-label {
+  font-size: 0.75rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.cr-select {
+  padding: 10px 14px;
+  font-size: 0.9rem;
+  width: 100%;
+}
+
+.cr-warn {
+  font-size: 0.8rem;
+  color: var(--status-warn);
+}
+
+/* Layout */
+.cr-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr 320px;
+  gap: 18px;
+  align-items: start;
+}
+
+@media (max-width: 1100px) {
+  .cr-layout { grid-template-columns: 1fr 1fr; }
+  .cr-panel--chat { grid-column: 1 / -1; }
+}
+@media (max-width: 700px) {
+  .cr-layout { grid-template-columns: 1fr; }
+  .cr-page { padding: 78px 16px 40px; }
+}
+
+/* Panel */
+.cr-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  box-shadow: var(--shadow-card);
+}
+
+.cr-panel__head {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.cr-panel__icon {
+  color: var(--accent-primary);
+  font-size: 1rem;
+}
+.cr-panel__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+}
+
+/* Left panel */
+.cr-cam-placeholder {
+  text-align: center;
+  padding: 24px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-style: italic;
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--radius-md);
+}
+
+.cr-interim {
+  background: var(--accent-pulse);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+  padding: 10px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cr-interim__label {
+  font-size: 0.72rem;
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+}
+.cr-interim__text {
+  font-size: 0.925rem;
+  color: var(--text-primary);
+  font-style: italic;
+}
+
+/* Centre panel – sign stage */
+.cr-sign-stage {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 180px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 32px 20px;
+  text-align: center;
+}
+.cr-sign-word {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: -0.04em;
+  color: var(--accent-primary);
+  text-shadow: 0 0 40px rgba(0, 212, 170, 0.3);
+  line-height: 1;
+}
+.cr-sign-sub {
+  font-size: 0.78rem;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 10px;
+  font-family: var(--font-display);
+  font-weight: 600;
+}
+.cr-sign-empty {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  font-style: italic;
+}
+
+/* Caption box */
+.cr-caption-box {
+  background: var(--bg-surface);
+  border: 1px dashed var(--border-mid);
+  border-radius: var(--radius-md);
+  padding: 14px 16px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.3s, background 0.3s;
+}
+.cr-caption-box--active {
+  border-style: solid;
+  border-color: var(--accent-primary);
+  background: var(--accent-pulse);
+}
+.cr-caption-text {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  text-align: center;
+  line-height: 1.5;
+}
+.cr-caption-placeholder {
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+
+/* Right panel – chat */
+.cr-panel--chat {
+  height: 600px;
+}
+
+.cr-chat-partner {
+  color: var(--accent-primary);
+  font-weight: 600;
+}
+
+.cr-messages {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+  padding-right: 4px;
+}
+.cr-messages__empty {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.82rem;
+  font-style: italic;
+  padding: 30px 10px;
+}
+
+/* Messages */
+.cr-msg {
+  display: flex;
+  flex-direction: column;
+}
+.cr-msg--teacher { align-items: flex-end; }
+.cr-msg--student { align-items: flex-start; }
+
+.cr-msg__bubble {
+  max-width: 82%;
+  padding: 9px 14px;
+  border-radius: 16px;
+  word-break: break-word;
+}
+.cr-msg--teacher .cr-msg__bubble {
+  background: var(--msg-teacher-bg);
+  border: 1px solid var(--border-mid);
+  border-bottom-right-radius: 4px;
+  color: var(--msg-teacher-color);
+}
+.cr-msg--student .cr-msg__bubble {
+  background: var(--msg-student-bg);
+  border: 1px solid var(--border-subtle);
+  border-bottom-left-radius: 4px;
+  color: var(--msg-student-color);
+}
+.cr-msg__text {
+  font-size: 0.9rem;
+  line-height: 1.45;
+}
+.cr-msg__meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 3px;
+  padding: 0 4px;
+}
+.cr-msg--teacher .cr-msg__meta { flex-direction: row-reverse; }
+
+.cr-msg__role {
+  font-size: 0.68rem;
+  font-family: var(--font-display);
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.cr-msg__time {
+  font-size: 0.68rem;
+  color: var(--text-muted);
+}
+
+/* Chat inputs */
+.cr-chat-input {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: 10px;
+}
+.cr-chat-input--student {
+  border-top: none;
+  padding-top: 0;
+  border-top: 1px dashed var(--border-subtle);
+  padding-top: 8px;
+}
+.cr-chat-input__field {
+  flex: 1;
+  padding: 9px 14px;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+}
+.cr-chat-input__field:focus {
+  border-color: var(--accent-primary);
+  outline: none;
+  box-shadow: 0 0 0 3px var(--accent-pulse);
+}
+.cr-chat-input__field:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.cr-chat-input__send {
+  padding: 9px 14px;
+  font-size: 1rem;
+  flex-shrink: 0;
+}

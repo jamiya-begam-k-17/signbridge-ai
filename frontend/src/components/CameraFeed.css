@@ -1,0 +1,94 @@
+.camera-feed {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  background: var(--bg-surface);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  border: 1px solid var(--border-subtle);
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.camera-feed--active {
+  border-color: var(--border-active);
+  box-shadow: var(--shadow-glow);
+  animation: glow-pulse 3s ease infinite;
+}
+
+/* Hidden capture canvas */
+.camera-feed__canvas {
+  display: none;
+}
+
+/* Video element */
+.camera-feed__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transform: scaleX(-1); /* Mirror so user sees themselves correctly */
+  display: block;
+}
+
+/* Corner brackets */
+.camera-feed__corner {
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  border-color: var(--accent-primary);
+  border-style: solid;
+  opacity: 0.8;
+  z-index: 5;
+}
+.camera-feed__corner--tl { top: 12px; left: 12px; border-width: 2px 0 0 2px; border-radius: 4px 0 0 0; }
+.camera-feed__corner--tr { top: 12px; right: 12px; border-width: 2px 2px 0 0; border-radius: 0 4px 0 0; }
+.camera-feed__corner--bl { bottom: 12px; left: 12px; border-width: 0 0 2px 2px; border-radius: 0 0 0 4px; }
+.camera-feed__corner--br { bottom: 12px; right: 12px; border-width: 0 2px 2px 0; border-radius: 0 0 4px 0; }
+
+/* Scan line */
+.camera-feed__scanline {
+  position: absolute;
+  left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+  opacity: 0.5;
+  z-index: 4;
+  animation: scan-line 3s linear infinite;
+}
+
+/* Live badge */
+.camera-feed__live-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 6;
+}
+
+/* Idle placeholder */
+.camera-feed__placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--text-muted);
+}
+
+.camera-feed__placeholder-icon {
+  font-size: 3rem;
+  color: var(--border-mid);
+  line-height: 1;
+}
+
+.camera-feed__placeholder p {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  color: var(--text-secondary);
+}
+
+.camera-feed__placeholder span {
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
