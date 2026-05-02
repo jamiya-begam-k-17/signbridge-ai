@@ -184,6 +184,26 @@
   flex: 1;
 }
 
+/* Assistive mode link highlight */
+.navbar__link--assistive {
+  color: var(--accent-primary);
+  border: 1px solid var(--border-mid);
+  border-radius: var(--radius-md);
+}
+.navbar__link--assistive:hover,
+.navbar__link--assistive.navbar__link--active {
+  background: var(--accent-pulse);
+  border-color: var(--accent-primary);
+}
+
+/* Voice indicator dot in navbar */
+.navbar__voice-dot {
+  font-size: 1rem;
+  opacity: 0.75;
+  animation: blink-dot 2s ease infinite;
+  cursor: default;
+}
+
 @media (max-width: 840px) {
   .navbar__links     { display: none; }
   .navbar__hamburger { display: flex; }

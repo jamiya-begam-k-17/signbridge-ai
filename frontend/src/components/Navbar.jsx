@@ -2,14 +2,16 @@ import { useState, useEffect } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useAssistiveVoice } from '../context/AssistiveVoiceContext';
 import './Navbar.css';
 
 const NAV_LINKS = [
-  { to: '/',          label: 'Home'      },
-  { to: '/detect',    label: 'Detect'    },
-  { to: '/translate', label: 'Translate' },
-  { to: '/classroom', label: 'Classroom' },
-  { to: '/history',   label: 'History'   },
+  { to: '/',           label: 'Home'        },
+  { to: '/detect',     label: 'Detect'      },
+  { to: '/translate',  label: 'Translate'   },
+  { to: '/classroom',  label: 'Classroom'   },
+  { to: '/history',    label: 'History'     },
+  { to: '/assistive',  label: '◉ Vision Assist' },
 ];
 
 export default function Navbar({ apiHealthy }) {
@@ -18,6 +20,7 @@ export default function Navbar({ apiHealthy }) {
   const location = useLocation();
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { voiceActive } = useAssistiveVoice();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -42,7 +45,7 @@ export default function Navbar({ apiHealthy }) {
             <NavLink
               key={to}
               to={to}
-              className={({ isActive }) => `navbar__link ${isActive ? 'navbar__link--active' : ''}`}
+              className={({ isActive }) => `navbar__link ${isActive ? 'navbar__link--active' : ''} ${to === '/assistive' ? 'navbar__link--assistive' : ''}`}
               end={to === '/'}
             >
               {label}
@@ -53,8 +56,13 @@ export default function Navbar({ apiHealthy }) {
         {/* Right */}
         <div className="navbar__right">
           {user && (
-            <span className="navbar__user">
-              {user.username}
+            <span className="navbar__user">{user.username}</span>
+          )}
+
+          {/* Voice indicator */}
+          {voiceActive && (
+            <span className="navbar__voice-dot" title="Voice commands active" aria-label="Voice commands listening">
+              🎙
             </span>
           )}
 

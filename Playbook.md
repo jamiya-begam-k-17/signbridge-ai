@@ -164,3 +164,4 @@ We invite investors to join us in building a more inclusive world through innova
 
 ---
 
+*This playbook is confidential and intended for potential investors only. All information is current as of [Date] and subject to change.*

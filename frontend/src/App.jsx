@@ -6,14 +6,16 @@ import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
-import Navbar    from './components/Navbar';
-import Home      from './pages/Home';
-import Detect    from './pages/Detect';
-import Translate from './pages/Translate';
-import Classroom from './pages/Classroom';
-import History   from './pages/History';
-import Login     from './pages/Login';
-import Register  from './pages/Register';
+import { AssistiveVoiceProvider } from './context/AssistiveVoiceContext';
+import Navbar     from './components/Navbar';
+import Home       from './pages/Home';
+import Detect     from './pages/Detect';
+import Translate  from './pages/Translate';
+import Classroom  from './pages/Classroom';
+import History    from './pages/History';
+import Assistive  from './pages/Assistive';
+import Login      from './pages/Login';
+import Register   from './pages/Register';
 import { checkHealth } from './services/api';
 
 function ProtectedRoute({ children }) {
@@ -49,18 +51,20 @@ function AppContent() {
   }, []);
 
   return (
-    <>
+    // AssistiveVoiceProvider must be inside BrowserRouter so it can use useNavigate
+    <AssistiveVoiceProvider>
       <Navbar apiHealthy={apiHealthy} />
       <Routes>
-        <Route path="/login"    element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/login"     element={<Login />} />
+        <Route path="/register"  element={<Register />} />
         <Route path="/"          element={<ProtectedRoute><Home apiHealthy={apiHealthy} /></ProtectedRoute>} />
         <Route path="/detect"    element={<ProtectedRoute><Detect /></ProtectedRoute>} />
         <Route path="/translate" element={<ProtectedRoute><Translate /></ProtectedRoute>} />
         <Route path="/classroom" element={<ProtectedRoute><Classroom /></ProtectedRoute>} />
         <Route path="/history"   element={<ProtectedRoute><History /></ProtectedRoute>} />
+        <Route path="/assistive" element={<ProtectedRoute><Assistive /></ProtectedRoute>} />
       </Routes>
-    </>
+    </AssistiveVoiceProvider>
   );
 }
 
