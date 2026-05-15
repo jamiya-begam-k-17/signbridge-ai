@@ -239,13 +239,13 @@ Use the provided scripts and datasets to train or test sign recognition models.
 # Team Members
 
 - Jamiya Begam K 17  
-  GitHub: https://github.com/jamiya-begam-k17
+  GitHub: [@jamiya-begam-k-17](https://github.com/jamiya-begam-k-17)
 
 - Mohamed Afrik  
-  GitHub: https://github.com/moh-afrik
+  GitHub: [@moh-afrik](https://github.com/moh-afrik)
 
 - Javid Afzal  
-  GitHub: https://github.com/javid-afzal
+  GitHub: [@javidafzal](https://github.com/javidafzal)
 
 ---
 
