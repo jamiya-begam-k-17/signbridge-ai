@@ -14,3 +14,4 @@ alembic
 passlib[bcrypt]
 python-jose[cryptography]
 python-decouple
+python-dotenv

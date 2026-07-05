@@ -14,6 +14,9 @@ __pycache__/
 *.csv
 *.task
 
+/ai_model/dataset/
+/sign_language
+
 # images
 *.jpg
 *.png
