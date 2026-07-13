@@ -6,16 +6,18 @@ __pycache__/
 # pickle files
 *.pkl
 
-# json file
-*.json
 
 # C extensions
 *.so
 *.csv
 *.task
 
+backend\models\hand_landmarker.task
+
 /ai_model/dataset/
 /sign_language
+
+*.npz
 
 # images
 *.jpg
@@ -26,6 +28,7 @@ __pycache__/
 #videos
 *.mp4
 *.avi
+*.mov
 
 # Distribution / packaging
 .Python
@@ -164,6 +167,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+venv_mp
 
 # Spyder project settings
 .spyderproject

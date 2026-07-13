@@ -7,7 +7,8 @@ import os
 import numpy as np
 import cv2
 
-from utils.predict_sign import predict_sign
+# from utils.predict_sign import predict_sign
+from utils.predict_dynamic_sign import predict_sign
 from database import get_db, engine
 from models import Base, User, Conversation, Message
 from auth import verify_password, get_password_hash, create_access_token, verify_token
@@ -180,14 +181,21 @@ async def predict(file: UploadFile = File(...)):
         frame = cv2.imdecode(npimg, cv2.IMREAD_COLOR)
 
         if frame is None:
-            return {"error": "Invalid image"}
+            return {"prediction": "unknown", "probability": 0.0, "error": "Invalid image"}
 
         prediction = predict_sign(frame)
 
-        return {"prediction": prediction}
+        if isinstance(prediction, dict):
+            return {
+                "prediction": prediction.get("sign", "unknown"),
+                "probability": prediction.get("probability", 0.0),
+                "status": prediction.get("status", "ok"),
+            }
+
+        return {"prediction": str(prediction), "probability": 0.0, "status": "ok"}
 
     except Exception as e:
-        return {"error": str(e)}
+        return {"prediction": "unknown", "probability": 0.0, "error": str(e)}
 
 @app.get("/conversations/{conv_id}/messages", response_model=list[MessageResponse])
 def get_messages(conv_id: int, current_user: User = Depends(get_current_user), db: Session = Depends(get_db)):

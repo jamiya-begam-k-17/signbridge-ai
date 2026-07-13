@@ -17,6 +17,7 @@ prediction_buffer = deque(maxlen=15)
 # LOAD TRAINED MODEL
 # =========================================
 MODEL_PATH = "../ai_model/sign_pipeline.pkl"
+# ../ai_model/saved_model/saved_model/best_model.keras
 ENCODER_PATH = "../ai_model/label_encoder.pkl"
 TASK_MODEL = "models/hand_landmarker.task"
 
