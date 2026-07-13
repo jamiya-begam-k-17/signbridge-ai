@@ -18,6 +18,11 @@ backend\models\hand_landmarker.task
 /sign_language
 
 *.npz
+ai_model/datasets/
+ai_model/saved_model/
+datasets/WLASL_v0.3.json
+node_modules/
+package-lock.json
 
 # images
 *.jpg
