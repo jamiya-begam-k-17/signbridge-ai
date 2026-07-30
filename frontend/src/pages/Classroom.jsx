@@ -196,6 +196,7 @@ export default function Classroom() {
     }
 
     await startCamera();
+    await new Promise((r) => setTimeout(r, 300));
     setSessionActive(true);
     setChatMessages([]);
     setSignHistory([]);
