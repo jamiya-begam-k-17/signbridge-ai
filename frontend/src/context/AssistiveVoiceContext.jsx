@@ -1,6 +1,4 @@
-// ============================================================
 // AssistiveVoiceContext – global voice commands + TTS
-// ============================================================
 
 import { createContext, useContext, useEffect, useRef, useState, useCallback } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
@@ -11,10 +9,12 @@ export function AssistiveVoiceProvider({ children }) {
   const [lastExtractedText, setLastExtractedText] = useState('');
   const [isSpeaking,        setIsSpeaking]        = useState(false);
   const [voiceActive,       setVoiceActive]       = useState(false);
+  const [commandsEnabled,   setCommandsEnabled]   = useState(true);
 
   const synthRef           = useRef(window.speechSynthesis);
   const lastExtractedRef   = useRef(''); // ref so onresult closure is always fresh
   const locationRef        = useRef('/');
+  const commandsEnabledRef = useRef(commandsEnabled);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -22,6 +22,7 @@ export function AssistiveVoiceProvider({ children }) {
   // keep refs in sync
   useEffect(() => { lastExtractedRef.current = lastExtractedText; }, [lastExtractedText]);
   useEffect(() => { locationRef.current = location.pathname; },     [location.pathname]);
+  useEffect(() => { commandsEnabledRef.current = commandsEnabled; },[commandsEnabled]);
 
   // ── TTS — stable reference, never recreated ──────────────
   const speak = useCallback((text) => {
@@ -45,6 +46,9 @@ export function AssistiveVoiceProvider({ children }) {
     setIsSpeaking(false);
   }, []);
 
+  const enableCommands = useCallback(() => setCommandsEnabled(true), []);
+  const disableCommands = useCallback(() => setCommandsEnabled(false), []);
+
   // ── Voice recognition — started once, never restarted by deps ──
   useEffect(() => {
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
@@ -56,6 +60,11 @@ export function AssistiveVoiceProvider({ children }) {
     rec.lang           = 'en-US';
 
     rec.onresult = (event) => {
+      if (!commandsEnabledRef.current) {
+        console.log('[AssistiveVoice] Commands disabled, ignoring speech input.');
+        return;
+      }
+
       const transcript = event.results[event.results.length - 1][0].transcript
         .trim()
         .toLowerCase();
@@ -116,6 +125,8 @@ export function AssistiveVoiceProvider({ children }) {
         voiceActive,
         lastExtractedText,
         setLastExtractedText,
+        // enableCommands,
+        disableCommands,
       }}
     >
       {children}
