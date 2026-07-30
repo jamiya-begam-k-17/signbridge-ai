@@ -125,7 +125,7 @@ export function AssistiveVoiceProvider({ children }) {
         voiceActive,
         lastExtractedText,
         setLastExtractedText,
-        // enableCommands,
+        enableCommands,
         disableCommands,
       }}
     >
