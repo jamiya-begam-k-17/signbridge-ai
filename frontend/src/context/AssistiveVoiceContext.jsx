@@ -16,6 +16,8 @@ export function AssistiveVoiceProvider({ children }) {
   const locationRef        = useRef('/');
   const commandsEnabledRef = useRef(commandsEnabled);
 
+  const recognitionRef = useRef(null);
+
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -45,9 +47,6 @@ export function AssistiveVoiceProvider({ children }) {
     synthRef.current.cancel();
     setIsSpeaking(false);
   }, []);
-
-  const enableCommands = useCallback(() => setCommandsEnabled(true), []);
-  const disableCommands = useCallback(() => setCommandsEnabled(false), []);
 
   // ── Voice recognition — started once, never restarted by deps ──
   useEffect(() => {
@@ -103,9 +102,12 @@ export function AssistiveVoiceProvider({ children }) {
 
     // keep it alive
     rec.onend = () => {
-      try { rec.start(); } catch (_) {}
+      if (commandsEnabledRef.current) {
+        try { rec.start(); } catch (_) {}
+      }
     };
 
+    recognitionRef.current = rec;
     rec.start();
     setVoiceActive(true);
 
@@ -115,6 +117,16 @@ export function AssistiveVoiceProvider({ children }) {
     };
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []); // mount once — reads fresh data via refs
+
+  const enableCommands = useCallback(() => {
+    setCommandsEnabled(true);
+    try { recognitionRef.current?.start(); } catch (_) {}
+  }, []);
+
+  const disableCommands = useCallback(() => {
+    setCommandsEnabled(false);
+    try { recognitionRef.current?.stop(); } catch (_) {}
+  }, []);
 
   return (
     <AssistiveVoiceContext.Provider

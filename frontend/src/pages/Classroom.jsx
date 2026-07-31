@@ -189,13 +189,14 @@ export default function Classroom() {
     if (!selectedStudent) return;
     disableCommands();
     try {
-      const { conversation: conv } = await createConversation(parseInt(selectedStudent, 10));
+      const conv = await createConversation(parseInt(selectedStudent, 10));
       setConvId(conv.id);
     } catch (e) {
       console.error('Could not create conversation', e);
     }
 
     await startCamera();
+    await new Promise((r) => setTimeout(r, 300));
     setSessionActive(true);
     setChatMessages([]);
     setSignHistory([]);
