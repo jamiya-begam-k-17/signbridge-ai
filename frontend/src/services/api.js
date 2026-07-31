@@ -54,14 +54,6 @@ export async function register(username, email, password, role = 'student') {
   return res.data;
 }
 
-// export async function login(username, password) {
-//   const formData = new FormData();
-//   formData.append('username', username);
-//   formData.append('password', password);
-//   const res = await api.post('/token', formData);
-//   return res.data;
-// }
-
 export async function login(username, password) {
   const params = new URLSearchParams();
   params.append('username', username);
