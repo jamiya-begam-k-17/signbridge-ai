@@ -35,6 +35,7 @@ export default function Classroom() {
   const [speechActive, setSpeechActive] = useState(false);
   const [speechSupported, setSpeechSupported] = useState(false);
   const [interimCaption, setInterimCaption] = useState('');
+  const [teacherCaptions, setTeacherCaptions] = useState([]);
 
   const chatEndRef = useRef(null);
   const intervalRef = useRef(null);
@@ -127,6 +128,9 @@ export default function Classroom() {
       if (finalText) {
         setFinalCaption(finalText);
         setInterimCaption('');
+        if (captionRole === 'teacher') {
+          setTeacherCaptions((prev) => [...prev, finalText]);
+        }
         addMessage(captionRole, finalText);
         if (convId) {
           sendMessage(convId, `[${captionRole === 'teacher' ? 'Teacher' : 'Student'}] ${finalText}`).catch(() => {});
@@ -200,6 +204,7 @@ export default function Classroom() {
     setSessionActive(true);
     setChatMessages([]);
     setSignHistory([]);
+    setTeacherCaptions([]);
     setFinalCaption('');
     setInterimCaption('');
     setPushToTalkActive(false);
@@ -235,6 +240,7 @@ export default function Classroom() {
     setSessionActive(false);
     setCurrentSign('');
     setSignHistory([]);
+    setTeacherCaptions([]);
     setInterimCaption('');
     setFinalCaption('');
     setPushToTalkActive(false);
@@ -284,13 +290,16 @@ export default function Classroom() {
       <div className="cr-header fade-up">
         <div className="cr-header-row">
           <div className="cr-header-left">
-            <h1 className="page-title">Classroom</h1>
-            {sessionActive && (
-              <span className="badge badge-live">LIVE · {selectedStudentName}</span>
-            )}
+            <span className="cr-header-tag">Classroom mode</span>
+            <div className="cr-header-main">
+              <h1 className="page-title">Live sign and speech support</h1>
+              {sessionActive && (
+                <span className="badge badge-live">LIVE · {selectedStudentName}</span>
+              )}
+            </div>
           </div>
           <p className="page-sub">
-            Choose a student, start the session, and communicate through sign language & live captions.
+            Capture student signs, display the latest spoken caption, and keep a complete session transcript in a focused, easy-to-read workspace.
           </p>
         </div>
       </div>
@@ -355,6 +364,7 @@ export default function Classroom() {
           pushToTalkActive={pushToTalkActive}
           interimCaption={interimCaption}
           finalCaption={finalCaption}
+          teacherCaptions={teacherCaptions}
           onStartLecture={startLectureSpeaking}
           onPauseLecture={pauseLectureSpeaking}
           onStartPushToTalk={startPushToTalk}

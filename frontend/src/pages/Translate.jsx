@@ -1,12 +1,42 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useSpeech } from '../hooks/useSpeech';
 import './Translate.css';
 
-const MODEL_SIGNS = ['hello', 'help', 'no', 'water', 'yes', 'thank you'];
+const MODEL_SIGNS = ['how_are_you', 'library', 'team', 'technology', 'thank_you'];
 
+const LOCAL_VIDEO_PATHS = {
+  how_are_you: '/videos/how_are_you_001.MOV',
+  library: '/videos/library_002.MOV',
+  team: '/videos/team_014.MP4',
+  technology: '/videos/technology_011.MOV',
+  thank_you: '/videos/thank_you_020.MOV',
+};
 
-function getSignUrl(word) {
-  return `http://localhost:5173/images/${word}.png`;
+const PHRASE_NORMALIZATIONS = {
+  'how are you': 'how_are_you',
+  'thank you': 'thank_you',
+};
+
+function getVideoUrl(word) {
+  return LOCAL_VIDEO_PATHS[word] || '#';
+}
+
+function normalizeInputText(text) {
+  const tokens = text.trim().toLowerCase().split(/\s+/).filter(Boolean);
+  const parsed = [];
+
+  for (let i = 0; i < tokens.length; i += 1) {
+    const twoWord = i + 1 < tokens.length ? `${tokens[i]} ${tokens[i + 1]}` : null;
+    if (twoWord && PHRASE_NORMALIZATIONS[twoWord]) {
+      parsed.push(PHRASE_NORMALIZATIONS[twoWord]);
+      i += 1;
+      continue;
+    }
+
+    parsed.push(tokens[i].replace(/\s+/g, '_'));
+  }
+
+  return parsed;
 }
 
 
@@ -14,14 +44,11 @@ export default function Translate() {
   const [inputText, setInputText]   = useState('');
   const [words,     setWords]       = useState([]);
   const [selected,  setSelected]    = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
   const { speak, supported }        = useSpeech();
 
   const handleTranslate = () => {
-    const parsed = inputText
-      .trim()
-      .toLowerCase()
-      .split(/\s+/)
-      .filter(Boolean);
+    const parsed = normalizeInputText(inputText);
     setWords(parsed);
     setSelected(null);
   };
@@ -35,6 +62,11 @@ export default function Translate() {
 
   const knownWords   = words.filter((w) => MODEL_SIGNS.includes(w));
   const unknownWords = words.filter((w) => !MODEL_SIGNS.includes(w));
+
+  const activeVideoUrl = useMemo(() => {
+    if (!activeVideo) return null;
+    return getVideoUrl(activeVideo);
+  }, [activeVideo]);
 
   return (
     <div className="translate-page">
@@ -50,7 +82,7 @@ export default function Translate() {
       <div className="translate-page__input-area fade-up" style={{ animationDelay: '0.1s' }}>
         <textarea
           className="translate-page__textarea"
-          placeholder="Type your message here… (e.g. hello yes thank you)"
+          placeholder="Type your message here… (e.g. how_are_you library team technology thank_you)"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           onKeyDown={handleKeyDown}
@@ -105,38 +137,66 @@ export default function Translate() {
         </div>
       )}
 
-      {/* Sign card grid */}
+      {/* Sign card grid with video preview */}
       {knownWords.length > 0 && (
-        <div className="translate-page__cards fade-up" style={{ animationDelay: '0.15s' }}>
-          {knownWords.map((w, i) => (
-            <div
-              key={`${w}-${i}`}
-              className={`translate-page__sign-card ${
-                selected !== null && words[selected] === w ? 'translate-page__sign-card--selected' : ''
-              }`}
-            >
-              {/* Visual reference */}
-              <div className="translate-page__sign-visual">
-                <div className="translate-page__sign-letter">{w[0].toUpperCase()}</div>
-                <div className="translate-page__sign-label">{w}</div>
-              </div>
+        <div className="translate-page__cards-container fade-up" style={{ animationDelay: '0.15s' }}>
+          <div className="translate-page__cards">
+            {knownWords.map((w, i) => (
+              <div
+                key={`${w}-${i}`}
+                className={`translate-page__sign-card ${
+                  selected !== null && words[selected] === w ? 'translate-page__sign-card--selected' : ''
+                }`}
+              >
+                {/* Visual reference */}
+                <div className="translate-page__sign-visual">
+                  <div className="translate-page__sign-letter">{w[0].toUpperCase()}</div>
+                  <div className="translate-page__sign-label">{w}</div>
+                </div>
 
-              <div className="translate-page__sign-info">
-                <p className="translate-page__sign-name">{w}</p>
-                <p className="translate-page__sign-note">
-                  Show this sign to communicate "{w}" in ASL
-                </p>
-                <a
-                  href={getSignUrl(w)}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="btn btn-ghost translate-page__sign-ref-btn"
-                >
-                  View reference →
-                </a>
+                <div className="translate-page__sign-info">
+                  <p className="translate-page__sign-name">{w}</p>
+                  <p className="translate-page__sign-note">
+                    Show this sign to communicate "{w}" in ASL
+                  </p>
+                  <button
+                    type="button"
+                    className="btn btn-ghost translate-page__sign-ref-btn"
+                    onClick={() => setActiveVideo(w)}
+                  >
+                    {activeVideo === w ? 'Playing…' : 'Play video →'}
+                  </button>
+                </div>
               </div>
+            ))}
+          </div>
+
+          {activeVideoUrl && (
+            <div className="translate-page__video-player">
+              <div className="translate-page__video-header">
+                <h3 className="translate-page__video-title">Preview: {activeVideo}</h3>
+                <button
+                  type="button"
+                  className="btn btn-ghost translate-page__video-close"
+                  onClick={() => setActiveVideo(null)}
+                >
+                  Close
+                </button>
+              </div>
+              <video
+                key={activeVideoUrl}
+                className="translate-page__video"
+                controls
+                autoPlay
+                playsInline
+                preload="metadata"
+              >
+                <source src={activeVideoUrl} type="video/mp4" />
+                <source src={activeVideoUrl} />
+                Your browser does not support the video tag.
+              </video>
             </div>
-          ))}
+          )}
         </div>
       )}
 

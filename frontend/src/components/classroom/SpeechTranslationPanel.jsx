@@ -9,6 +9,7 @@ export default function SpeechTranslationPanel({
   pushToTalkActive,
   interimCaption,
   finalCaption,
+  teacherCaptions,
   onStartLecture,
   onPauseLecture,
   onStartPushToTalk,
@@ -91,10 +92,20 @@ export default function SpeechTranslationPanel({
       </div>
 
       <div className="cr-translation-history">
-        <div className="cr-translation-history__heading">Session captions</div>
-        <div className="cr-translation-history__item">
-          {finalCaption ? finalCaption : 'Finalized captions appear here after each detected phrase.'}
-        </div>
+        <div className="cr-translation-history__heading">Finalized Captions</div>
+        {teacherCaptions.length > 0 ? (
+          <ul className="cr-caption-list">
+            {teacherCaptions.map((caption, index) => (
+              <li key={index} className="cr-caption-list__item">
+                {caption}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <div className="cr-translation-history__item">
+            Finalized captions appear here after each detected phrase.
+          </div>
+        )}
       </div>
     </section>
   );

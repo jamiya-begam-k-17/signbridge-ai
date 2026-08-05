@@ -27,32 +27,24 @@ export default function SignRecognitionPanel({
         </div>
 
         <div className="cr-sign-summary">
-          <div className="cr-sign-summary__label">Detected Sign</div>
+          <div className="cr-sign-summary__label">Current sign</div>
           <div className="cr-sign-summary__word">
             {currentSign ? formatSignWord(currentSign) : (sessionActive ? 'Detecting sign...' : 'No active session')}
           </div>
           <div className="cr-sign-summary__note">
             {sessionActive
-              ? 'Real-time sign text updates as detection occurs.'
+              ? 'Live sign detection appears below the camera preview.'
               : 'Start a session to view live sign detection.'}
           </div>
         </div>
 
         <div className="cr-sign-history">
-          <div className="cr-sign-history__label">Recent detected signs</div>
-          <div className="cr-sign-history__list">
-            {signHistory.length > 0 ? (
-              signHistory.map((word, index) => (
-                <span key={`${word}-${index}`} className="cr-sign-history__word">
-                  {formatSignWord(word)}
-                </span>
-              ))
-            ) : (
-              <span className="cr-sign-history__empty">
-                Detected signs appear here as a sentence stream.
-              </span>
-            )}
-          </div>
+          <div className="cr-sign-history__label">Sign sentence</div>
+          <p className="cr-sign-history__sentence">
+            {signHistory.length > 0
+              ? `${signHistory.map((word) => formatSignWord(word)).join(', ')}.`
+              : 'Detected signs will form a natural sentence here as students perform new gestures.'}
+          </p>
         </div>
       </div>
     </section>

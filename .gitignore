@@ -31,9 +31,9 @@ package-lock.json
 *.bmp
 
 #videos
-*.mp4
+# *.mp4
 *.avi
-*.mov
+# *.mov
 
 # Distribution / packaging
 .Python
