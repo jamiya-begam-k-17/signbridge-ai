@@ -130,3 +130,118 @@
 @media (max-width: 600px) {
   .detect-page { padding: 80px 16px 40px; }
 }
+
+/* ── Upload dropzone ─────────────────────────────────────── */
+.detect-dropzone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  text-align: center;
+  min-height: 320px;
+  padding: 32px 24px;
+  background: var(--bg-card);
+  border: 2px dashed var(--border-mid);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color 0.2s ease, background 0.2s ease, transform 0.15s ease;
+}
+
+.detect-dropzone:hover {
+  border-color: var(--accent-primary);
+  background: var(--accent-pulse);
+}
+
+.detect-dropzone--active {
+  border-color: var(--accent-primary);
+  background: var(--accent-pulse);
+  transform: scale(1.01);
+}
+
+.detect-dropzone__icon {
+  font-size: 2.6rem;
+  margin-bottom: 6px;
+}
+
+.detect-dropzone__title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.detect-dropzone__sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+
+/* ── Video preview ───────────────────────────────────────── */
+.detect-preview {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+}
+
+.detect-preview__video {
+  width: 100%;
+  max-height: 420px;
+  border-radius: var(--radius-md);
+  background: #000;
+  display: block;
+}
+
+.detect-preview__meta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.8rem;
+  color: var(--text-muted);
+}
+
+.detect-preview__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-secondary);
+}
+
+.detect-preview__size {
+  flex-shrink: 0;
+  font-family: var(--font-display);
+}
+
+/* ── Result extras ───────────────────────────────────────── */
+.detect-page__result-note {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  text-align: center;
+  max-width: 260px;
+}
+
+.detect-page__confidence {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  letter-spacing: 0.02em;
+}
+
+.detect-page__placeholder {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100px;
+}
+
+@media (max-width: 480px) {
+  .detect-dropzone { min-height: 240px; padding: 24px 16px; }
+  .detect-preview__video { max-height: 280px; }
+}
+
