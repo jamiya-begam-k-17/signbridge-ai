@@ -53,7 +53,8 @@ RIGHT_HAND_END = 75
 def get_project_dirs() -> Tuple[Path, Path, Path]:
     """Resolve project directories relative to this script's location."""
     base_dir = Path(__file__).resolve().parent.parent
-    raw_dir = base_dir / "datasets" / "augmented"
+    # raw_dir = base_dir / "datasets" / "augmented"
+    raw_dir = base_dir / "datasets" / "no_sign"
     landmarks_dir = base_dir / "datasets" / "landmarks"
     metadata_dir = base_dir / "datasets" / "metadata"
     
@@ -227,7 +228,7 @@ def process_video(
 
 def write_output_files(metadata_dir: Path, metadata_records: List[Dict[str, Any]], total_processed: int, total_failed: int) -> None:
     """Persist metadata records and a compact processing summary."""
-    metadata_path = metadata_dir / "metadata.json"
+    metadata_path = metadata_dir / "metadata_no.json"
     with open(metadata_path, "w", encoding="utf-8") as f:
         json.dump(metadata_records, f, indent=4)
 
@@ -240,7 +241,7 @@ def write_output_files(metadata_dir: Path, metadata_records: List[Dict[str, Any]
         "failed": total_failed,
     }
 
-    summary_path = metadata_dir / "summary.json"
+    summary_path = metadata_dir / "summary_no.json"
     with open(summary_path, "w", encoding="utf-8") as f:
         json.dump(summary, f, indent=4)
 
@@ -333,8 +334,8 @@ def main() -> None:
 
     write_output_files(metadata_dir, metadata_records, total_processed, total_failed)
 
-    metadata_path = metadata_dir / "metadata.json"
-    summary_path = metadata_dir / "summary.json"
+    metadata_path = metadata_dir / "metadata_no.json"
+    summary_path = metadata_dir / "summary_no.json"
 
     logger.info("="*50)
     logger.info("Extraction Complete.")

@@ -34,8 +34,8 @@ EPSILON = 1e-8
 def get_project_dirs() -> Tuple[Path, Path]:
     """Resolve input and output directories relative to this script's location."""
     base_dir = Path(__file__).resolve().parent.parent
-    input_dir = base_dir / "datasets" / "landmarks"
-    output_dir = base_dir / "datasets" / "normalized"
+    input_dir = base_dir / "datasets" / "landmarks"/"no_sign"
+    output_dir = base_dir / "datasets" / "normalized"/"no_sign"
     return input_dir, output_dir
 
 

@@ -1,0 +1,140 @@
+{
+    "model": "Random Forest",
+    "dataset": {
+        "total_samples": 230,
+        "train_samples": 184,
+        "test_samples": 46,
+        "num_features": 128,
+        "num_classes": 5,
+        "classes": [
+            "hello",
+            "help",
+            "no",
+            "water",
+            "yes"
+        ]
+    },
+    "hyperparameters": {
+        "bootstrap": true,
+        "ccp_alpha": 0.0,
+        "class_weight": null,
+        "criterion": "gini",
+        "max_depth": null,
+        "max_features": "sqrt",
+        "max_leaf_nodes": null,
+        "max_samples": null,
+        "min_impurity_decrease": 0.0,
+        "min_samples_leaf": 1,
+        "min_samples_split": 2,
+        "min_weight_fraction_leaf": 0.0,
+        "monotonic_cst": null,
+        "n_estimators": 200,
+        "n_jobs": null,
+        "oob_score": false,
+        "random_state": 42,
+        "verbose": 0,
+        "warm_start": false
+    },
+    "performance": {
+        "accuracy": 0.9565217391304348,
+        "precision_macro": 0.9636363636363636,
+        "recall_macro": 0.9577777777777777,
+        "f1_macro": 0.9577089783281734
+    },
+    "classification_report": {
+        "hello": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 9.0
+        },
+        "help": {
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1-score": 0.9473684210526315,
+            "support": 10.0
+        },
+        "no": {
+            "precision": 1.0,
+            "recall": 0.8888888888888888,
+            "f1-score": 0.9411764705882353,
+            "support": 9.0
+        },
+        "water": {
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1-score": 1.0,
+            "support": 9.0
+        },
+        "yes": {
+            "precision": 0.8181818181818182,
+            "recall": 1.0,
+            "f1-score": 0.9,
+            "support": 9.0
+        },
+        "accuracy": 0.9565217391304348,
+        "macro avg": {
+            "precision": 0.9636363636363636,
+            "recall": 0.9577777777777777,
+            "f1-score": 0.9577089783281734,
+            "support": 46.0
+        },
+        "weighted avg": {
+            "precision": 0.9644268774703558,
+            "recall": 0.9565217391304348,
+            "f1-score": 0.957484183604792,
+            "support": 46.0
+        }
+    },
+    "confusion_matrix": [
+        [
+            9,
+            0,
+            0,
+            0,
+            0
+        ],
+        [
+            0,
+            9,
+            0,
+            0,
+            1
+        ],
+        [
+            0,
+            0,
+            8,
+            0,
+            1
+        ],
+        [
+            0,
+            0,
+            0,
+            9,
+            0
+        ],
+        [
+            0,
+            0,
+            0,
+            0,
+            9
+        ]
+    ],
+    "feature_information": {
+        "total_features": 128,
+        "landmark_features": 126,
+        "handedness_features": 2
+    },
+    "model_information": {
+        "number_of_trees": 200,
+        "max_depth": null,
+        "criterion": "gini",
+        "random_state": 42
+    },
+    "prediction": {
+        "prediction_time_per_sample_ms": 0.150339
+    }
+}
